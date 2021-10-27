@@ -2,10 +2,11 @@ package com.example.demo.model;
 
 import lombok.AllArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.io.Serializable;
+import java.util.Date;
 
 @AllArgsConstructor
-public class Event {
+public class Event implements Serializable {
 
 //    @Id
 //    @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -15,10 +16,13 @@ public class Event {
     private String eventName;
 
 //    @Column
-    private LocalDateTime creationTime;
+    private Date creationTime;
 
 //    @Column(columnDefinition = "false")
     private boolean isSent;
+
+    public Event() {
+    }
 
     public long getId() {
         return id;
@@ -32,11 +36,11 @@ public class Event {
         this.eventName = eventName;
     }
 
-    public LocalDateTime getCreationTime() {
+    public Date getCreationTime() {
         return creationTime;
     }
 
-    public void setCreationTime(LocalDateTime creationTime) {
+    public void setCreationTime(Date creationTime) {
         this.creationTime = creationTime;
     }
 
@@ -48,5 +52,10 @@ public class Event {
         isSent = sent;
     }
 
+    @Override
+    public String toString() {
+        return String.format("Event {id = %s, name = %s, creationDate = %s}",
+                getId(), getEventName(), getCreationTime());
+    }
 }
 
