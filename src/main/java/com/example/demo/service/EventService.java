@@ -4,10 +4,10 @@ import com.example.demo.model.Event;
 
 public interface EventService {
 
-    void send(Long id);
+    void send(Event event);
 
     Event getById( Long id);
 
-    void receive(Long id);
+    void receive(Event event);
 
 }

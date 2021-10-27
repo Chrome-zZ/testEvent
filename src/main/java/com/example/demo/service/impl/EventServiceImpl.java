@@ -4,6 +4,7 @@ import com.example.demo.DemoApplication;
 import com.example.demo.Listener;
 import com.example.demo.model.Event;
 import com.example.demo.service.EventService;
+import org.springframework.jms.annotation.JmsListener;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Service;
 
@@ -21,23 +22,19 @@ public class EventServiceImpl implements EventService {
     private static final String MESSAGE_QUEUE = "message_queue";
     private static final AtomicInteger ID_HOLDER = new AtomicInteger();
 
-    private final Listener listener;
-
-    private final List<Event> events = Stream.of(
+    List<Event> events = Stream.of(
             new Event(ID_HOLDER.incrementAndGet(), "First", new Date(), false),
-            new Event(ID_HOLDER.incrementAndGet(), "Second", new Date(), false)
+            new Event(ID_HOLDER.incrementAndGet(), "Second", new Date(), true)
     ).collect(Collectors.toList());
 
-    public EventServiceImpl(Listener listener) {
-        this.listener = listener;
-    }
-
     @Override
-    public void send(Long id) {
+    public void send(Event event) {
+        //здесь в аргументах метода, возможно, нужно задавать очередь, для различных получаетелей
+        //также нужно задать периодичность отправки сообщений в случае неудачи на стороне приёма (retrying)
         jmsTemplate = DemoApplication.context.getBean(JmsTemplate.class);
-//здесь в аргументах метода, возможно, нужно задавать очередь, для различных получаетелей
         System.out.println("------------ SENDING EVENTS... ------------");
-        jmsTemplate.convertAndSend(MESSAGE_QUEUE, getById(id));
+        jmsTemplate.convertAndSend(MESSAGE_QUEUE, event);
+//        event.setSent(true);
     }
 
     @Override
@@ -48,11 +45,10 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public void receive(Long id) {
-        Event eventToReceive = getById(id);
-        if (eventToReceive != null) {
-            listener.receiveMessage(eventToReceive);
-            eventToReceive.setSent(true);
-        }
+    @JmsListener(destination = MESSAGE_QUEUE, containerFactory = "myFactory")
+    public void receive(Event event) {
+        Listener listener = new Listener();
+        listener.receiveMessage(event);
+        event.setSent(true);
     }
 }

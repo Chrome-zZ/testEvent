@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.model.Event;
 import com.example.demo.service.EventService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,12 +18,14 @@ public class EventController {
 
     @PostMapping("/{id}")
     public void send(@PathVariable Long id) {
-        eventService.send(id);
+        Event event = eventService.getById(id);
+        eventService.send(event);
     }
 
     @GetMapping("/{id}")
     public void receive(@PathVariable Long id) {
-        eventService.receive(id);
+        Event event = eventService.getById(id);
+        eventService.receive(event);
     }
 
 }
