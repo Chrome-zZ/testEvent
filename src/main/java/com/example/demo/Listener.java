@@ -6,7 +6,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class Listener {
 
-    //    @JmsListener(destination = MESSAGE_QUEUE, containerFactory = "myFactory")
     public void receiveMessage(Event event) {
         System.out.println();
         System.out.println("========================================");

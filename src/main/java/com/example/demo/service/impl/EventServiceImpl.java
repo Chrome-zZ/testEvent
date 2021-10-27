@@ -34,7 +34,6 @@ public class EventServiceImpl implements EventService {
         jmsTemplate = DemoApplication.context.getBean(JmsTemplate.class);
         System.out.println("------------ SENDING EVENTS... ------------");
         jmsTemplate.convertAndSend(MESSAGE_QUEUE, event);
-//        event.setSent(true);
     }
 
     @Override
