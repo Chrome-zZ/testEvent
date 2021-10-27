@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.jms.JMSException;
+
 @RestController
 public class EventController {
 
@@ -17,13 +19,13 @@ public class EventController {
     }
 
     @PostMapping("/{id}")
-    public void send(@PathVariable Long id) {
+    public void send(@PathVariable Long id) throws JMSException {
         Event event = eventService.getById(id);
         eventService.send(event);
     }
 
     @GetMapping("/{id}")
-    public void receive(@PathVariable Long id) {
+    public void receive(@PathVariable Long id) throws JMSException {
         Event event = eventService.getById(id);
         eventService.receive(event);
     }
